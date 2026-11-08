@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OLED Preview</title>
+  <meta name="description" content="Paste Arduino display code from an .ino file and watch it run on a simulated OLED.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg id="traces" aria-hidden="true"></svg>
+
+  <header class="top">
+    <div>
+      <h1>OLED preview</h1>
+      <p>Paste the display code from an .ino file and watch it run.</p>
+    </div>
+    <div class="top-actions">
+      <label class="visually-hidden" for="examples">Load an example</label>
+      <select id="examples"><option value="">Load an example</option></select>
+      <button class="pad" id="open" type="button">Open .ino file</button>
+      <input id="file" type="file" accept=".ino,.h,.hpp,.c,.cpp,.txt" multiple hidden>
+    </div>
+  </header>
+
+  <main class="bench">
+    <section class="code" id="codePanel" aria-label="Sketch">
+      <div class="code-head">
+        <h2 id="fileName">sketch.ino</h2>
+        <span id="extraFiles"></span>
+      </div>
+      <div class="editor">
+        <pre class="gutter" id="gutter" aria-hidden="true"></pre>
+        <div class="error-bar" id="errorBar" hidden></div>
+        <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" wrap="off"
+          aria-label="Arduino sketch code" placeholder="Paste your .ino code here, or drop the file onto this page."></textarea>
+      </div>
+      <button class="message" id="message" type="button" hidden></button>
+      <div class="unsimulated" id="unsimulated" hidden>
+        <h2>Not simulated, so these give 0</h2>
+        <ul id="unsimulatedList"></ul>
+      </div>
+    </section>
+
+    <section class="preview" aria-label="Display preview">
+      <div class="module" id="module">
+        <span class="hole tl"></span><span class="hole tr"></span><span class="hole bl"></span><span class="hole br"></span>
+        <div class="pins">
+          <div class="pin"><i></i><b>GND</b></div>
+          <div class="pin"><i></i><b>VCC</b></div>
+          <div class="pin"><i></i><b>SCL</b></div>
+          <div class="pin"><i></i><b>SDA</b></div>
+        </div>
+        <div class="glass" id="glass">
+          <div class="active" id="active">
+            <canvas id="glow" aria-hidden="true"></canvas>
+            <canvas id="screen" role="img" aria-label="Simulated OLED display"></canvas>
+          </div>
+        </div>
+        <div class="ribbon"></div>
+      </div>
+
+      <p class="marking" id="status" role="status">No display yet</p>
+
+      <div class="controls">
+        <button class="pad" id="pause" type="button">Pause</button>
+        <button class="pad quiet" id="step" type="button">Next frame</button>
+        <button class="pad quiet" id="restart" type="button">Restart</button>
+        <label>Speed
+          <select id="speed">
+            <option value="0.25">0.25×</option><option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option>
+          </select>
+        </label>
+        <label>Panel
+          <select id="panel">
+            <option value="white">White</option><option value="blue">Blue</option><option value="bicolor">Yellow and blue</option>
+          </select>
+        </label>
+        <button class="pad quiet" id="save" type="button">Save PNG</button>
+      </div>
+
+      <div class="block" id="inputsBlock" hidden>
+        <h2>Inputs the sketch reads</h2>
+        <div class="inputs" id="inputs"></div>
+      </div>
+
+      <div class="block" id="screensBlock" hidden>
+        <h2>Screens shown so far</h2>
+        <div class="screens" id="screens"></div>
+      </div>
+
+      <div class="block" id="notesBlock" hidden>
+        <h2>Differences from real hardware</h2>
+        <ul class="notes" id="notes"></ul>
+      </div>
+
+      <div class="block" id="serialBlock" hidden>
+        <h2>Serial output</h2>
+        <pre class="serial" id="serial" tabindex="0"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/font.js"></script>
+  <script src="js/compiler.js"></script>
+  <script src="js/libs.js"></script>
+  <script src="js/runtime.js"></script>
+  <script src="js/examples.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
